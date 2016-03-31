@@ -3,7 +3,7 @@ from redirecter.models.site import Site
 
 class Redirecter(object):
     def __init__(self):
-        self._outputLevel = 2
+        self._outputLevel = 1
         self._site = Site(self._outputLevel)
     
     # create new site and page from link
