@@ -1,7 +1,6 @@
-from redirecter.models.page import Page
-
 class Site(object):
-    def __init__(self):
+    def __init__(self, outputLevel = 1):
+        self._outputLevel = outputLevel
         self._pages = dict()
 
     def __getitem__(self, key):
@@ -19,8 +18,8 @@ class Site(object):
         for key in self:
             results = "%s\n%s" % (results, key)
 
-            for link in self[key]:
-                results = "%s\n---> %s/%s" % (results, key, link)
+            if self._outputLevel is 1:
+                for link in self[key].links:
+                    results = "%s\n---> %s" % (results, link)
 
         return results
-

@@ -1,33 +1,24 @@
 import re
 from urllib.parse import urlparse
+from redirecter.utils.scraper import Scraper
 
 class Page(object):
     def __init__(self, base):
-        
-        reProtocol = re.compile('(^http[s]?)\:\/\/(.*)', re.M)
-        urlGroups = re.search(reProtocol, base)
-
-        self._keys = []
+        self.links = []
         self._page = urlparse(base)
-
-    def __iter__(self):
-        return iter(self._keys)
-
-    def __getitem__(self, key):
-        return self._keys[key]
+        self._scraper = Scraper()
 
     def __str__(self):
+        if not self.links: return ''
+
         self._clean()
 
-        def prep(x): return self._page.scheme + '://' + self._page.path + '/' + x
-        temp = [prep(x) for x in self._keys]
-
-        return '\n'.join(temp)
+        return '\n'.join(self.links)
 
     def _clean(self):
         temp = [] 
 
-        for item in self._keys:
+        for item in self.links:
             valid = True
 
             if item in temp: valid = False
@@ -36,7 +27,7 @@ class Page(object):
 
             if valid is True: temp.append(item)
 
-        self._keys = temp
+        self.links = temp
 
     def append(self, value):
         url = urlparse(value)
@@ -48,9 +39,12 @@ class Page(object):
         if netloc is not self._page.netloc and netloc: return
         if not path or re.search('void', path):  return
 
-        # match = re.compile('(\/$)|(^http[s]?:\/\/(w{3}.)*' + self._page.netloc + ')|(^\/)|(^(..\/)+)|(^\/){1}', re.M)
-        # value = match.sub('', value)
+        link = '%s://%s/%s' % (self._page.scheme, self._page.netloc, path)
+        self.links.append(link)
 
-        self._keys.append(path)
+        if len(self.links) % 2: self._clean()
 
-        if len(self._keys) % 2: self._clean()
+    def scan(self):
+        url = self._page.geturl()
+        links = self._scraper.scrape(url)
+        for link in links: self.append(link)

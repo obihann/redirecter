@@ -11,7 +11,7 @@ def main(argv):
         print('A URL is required')
         sys.exit(2)
 
-    site = redirecter.scanSite(uri)
+    site = redirecter.loadSite(uri)
     print(site)
 
 if __name__ == "__main__":
