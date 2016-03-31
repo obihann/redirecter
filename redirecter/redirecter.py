@@ -33,13 +33,14 @@ class Redirecter(object):
         scan = False
 
         for link in links:
-            page = Page(link)
-            page.scan()
+            if link not in self._site:
+                page = Page(link)
+                page.scan()
 
-            if childPages:
-                for x in page.links:
-                    if x not in self._site: 
-                        self._site[x] = Page(x)
-                        scan = True
+                if childPages:
+                    for x in page.links:
+                        if x not in self._site: 
+                            self._site[x] = Page(x)
+                            scan = True
 
         if scan: self._scanSite()
