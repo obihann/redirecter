@@ -1,3 +1,4 @@
+import cProfile
 import re
 import sys
 import urllib
@@ -8,8 +9,8 @@ class Scraper(HTMLParser):
     def handle_starttag(self, tag, attrs):
         if tag == 'a':
             for (key, value) in attrs:
-                 if key == 'href' and re.search('mailto\:', value) is None: 
-                     self._links.append(value)
+                if key == 'href' and re.search('mailto\:', value) is None: 
+                    self._links.append(value)
 
     def scrape(self, url):
         self._links = []
